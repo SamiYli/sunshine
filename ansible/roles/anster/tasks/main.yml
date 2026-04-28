@@ -1,0 +1,43 @@
+- group:
+    name: "sudoless"
+    state: present
+- user:
+    name: "antero"
+    state: present
+    groups: ["sudoless", "sudo", "adm"]
+- authorized_key:
+    user: "antero"
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGKCn3ohP5nLEvv7XjRfYAvbgqAKvOuUUbT7pmwJr60z sami@vbox"
+- copy:
+    dest: "/etc/sudoers.d/sudoless"
+    content: "%sudoless ALL = (ALL) NOPASSWD: ALL\n"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+- name: Install apache httpd
+  ansible.builtin.apt:
+    name: apache2
+    state: present
+- name: Install nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+- name: Write file
+  ansible.builtin.file:
+    path: /tmp/Hassua
+    state: touch
+    owner: anster
+    group: sudoless
+    mode: '0600'
+- copy:
+    dest: /tmp/Hassua
+    content: "HAHAHAHAHAHAHAHHAH OLEN ANTERO AHAHAHAHAHAHAH\n TÄMÄ ON NYT TOISELLA RIVILLÄ\n  OLEN ANTERO AHAHAHAHAHAHAH\n"
+- name: install apache and nginx
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apache2
+    - nginx
+    
+
